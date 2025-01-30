@@ -6,7 +6,6 @@ export class Image {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ManyToOne(() => User, (user) => user.images, { onDelete: 'CASCADE' }) 
 
     @Column()
     imageUrl: string;
