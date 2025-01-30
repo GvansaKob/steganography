@@ -11,9 +11,9 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
 
-    @InjectRepository(Image) 
+    @InjectRepository(Image)
     private imageRepository: Repository<Image>,
-  ) {}
+  ) { }
 
   findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { email } });
@@ -37,9 +37,17 @@ export class UsersService {
 
   async getCertifiedImages(userId: string) {
     return this.imageRepository.find({
-      where: { isCertified: true, user: { id: userId } }, 
-      relations: ['user'], 
+      where: { isCertified: true, user: { id: userId } },
+      relations: ['user'],
     });
   }
-  
+
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find({ relations: ['images'] });
+  }
+
+  async delete(userId: string): Promise<void> {
+    await this.usersRepository.delete(userId);
+  }
+
 }

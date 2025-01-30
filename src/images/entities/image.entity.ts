@@ -23,7 +23,9 @@ export class Image {
     @Column({ type: 'timestamp', nullable: true })
     certificatePurchasedAt?: Date;
 
-    @Column({ default: 0 })
+    @Column({ default: 0 }) 
     verificationCount: number;
-  user: any;
+
+    @ManyToOne(() => User, (user) => user.images, { nullable: false, onDelete: 'CASCADE' })
+    user: User;  
 }

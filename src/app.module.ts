@@ -10,7 +10,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { ImagesModule } from './images/images.module';
 import { Image } from './images/entities/image.entity';
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -36,7 +35,7 @@ import { Image } from './images/entities/image.entity';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: JwtGuard,
+      useClass: JwtGuard, 
     },
   ],
 })
