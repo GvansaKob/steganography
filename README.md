@@ -33,3 +33,9 @@ $ npm run start:prod
 ## Stay in touch
 
 - Author - [Camille Fauchier](https://www.linkedin.com/in/camille-fauchier/)
+
+
+on peu : 
+
+- créer des users et se connecter
+- ajouter des images à la bdd, ainsi que les certifié, validé et puis voir combien de fois elles sont coonsultées
