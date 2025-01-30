@@ -1,12 +1,18 @@
-import { UUID } from 'crypto';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Image } from '../images/entities/image.entity';
+import { OneToMany } from 'typeorm';
 
-@Entity({ name: 'user' })
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
+
+@Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id?: UUID;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -17,4 +23,11 @@ export class User {
 
   @Column()
   lastName: string;
+
+  @Column({ default: 'user' }) 
+role: string;
+
+@OneToMany(() => Image, (image) => image.user)
+images: Image[];
+
 }

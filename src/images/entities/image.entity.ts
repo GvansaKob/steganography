@@ -1,12 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/users.entity'; 
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'image' })
 export class Image {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ nullable: true })
-    userId: number;
+    @ManyToOne(() => User, (user) => user.images, { onDelete: 'CASCADE' }) 
 
     @Column()
     imageUrl: string;
@@ -25,4 +25,5 @@ export class Image {
 
     @Column({ default: 0 })
     verificationCount: number;
+  user: any;
 }

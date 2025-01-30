@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/users/users.entity';
+import { User } from '../users/users.entity'; 
 import { AccessToken } from './types/AccessToken';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 
 @Injectable()
@@ -14,11 +14,11 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
-    const user: User = await this.usersService.findOneByEmail(email);
+    const user: User | null = await this.usersService.findOneByEmail(email);
     if (!user) {
       throw new BadRequestException('Utilisateur non trouvé.');
     }
-    const isMatch: boolean = bcrypt.compareSync(password, user.password);
+    const isMatch: boolean = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       throw new BadRequestException('Le mot de passe ne fonctionne pas.');
     }
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   async login(user: User): Promise<AccessToken> {
-    const payload = { email: user.email, id: user.id };
+    const payload = { email: user.email, id: user.id, role: user.role };
     return { access_token: this.jwtService.sign(payload) };
   }
 
@@ -35,9 +35,15 @@ export class AuthService {
     if (existingUser) {
       throw new BadRequestException('Cet email existe déjà.');
     }
+
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    const newUser: User = { ...user, password: hashedPassword };
-    await this.usersService.create(newUser);
-    return this.login(newUser);
+    const newUser: Partial<User> = { 
+      ...user,
+      password: hashedPassword,
+      role: 'user',
+    };
+
+    const savedUser = await this.usersService.create(newUser);
+    return this.login(savedUser);
   }
 }

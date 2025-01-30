@@ -2,33 +2,44 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { User } from './users.entity';
-import { UUID } from 'crypto';
+import { Image } from '../images/entities/image.entity';
+
 
 @Injectable()
 export class UsersService {
-  imageRepository: any;
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
+    @InjectRepository(Image) 
+    private imageRepository: Repository<Image>,
   ) {}
 
   findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ email });
+    return this.usersRepository.findOne({ where: { email } });
   }
 
-  findOneById(id: UUID): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  findOneById(id: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } });
   }
 
-  create(user: User): Promise<User> {
-    return this.usersRepository.save(user);
+
+  create(user: Partial<User>): Promise<User> {
+    return this.usersRepository.save({
+      ...user,
+      role: user.role || 'user',
+    });
   }
 
-  update(userId: UUID, userInformation: Partial<User>): Promise<UpdateResult> {
+  update(userId: string, userInformation: Partial<User>): Promise<UpdateResult> {
     return this.usersRepository.update(userId, userInformation);
   }
 
-  async getCertifiedImages(userId: number) {
-    return this.imageRepository.find({ where: { userId, isCertified: true } });
+  async getCertifiedImages(userId: string) {
+    return this.imageRepository.find({
+      where: { isCertified: true, user: { id: userId } }, 
+      relations: ['user'], 
+    });
   }
+  
 }
