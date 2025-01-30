@@ -10,10 +10,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { ImagesModule } from './images/images.module';
 import { Image } from './images/entities/image.entity';
-import { CertificatModule } from './certificat/certificat.module';
-import { Certificat } from './certificat/entities/certificat.entity';
-import { VerificationModule } from './verification/verification.module';
-import { Verification } from './verification/entities/verification.entity';
 
 @Module({
   imports: [
@@ -27,17 +23,14 @@ import { Verification } from './verification/entities/verification.entity';
         database: configService.get<string>('DB_NAME'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
-        entities: [User, Image, Certificat, Verification],
+        entities: [User, Image],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     UsersModule,
     AuthModule,
-    ImagesModule,
-    CertificatModule,
-    VerificationModule,
-  ],
+    ImagesModule,],
   controllers: [AppController],
   providers: [
     AppService,
@@ -47,4 +40,4 @@ import { Verification } from './verification/entities/verification.entity';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

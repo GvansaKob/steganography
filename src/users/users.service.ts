@@ -6,6 +6,7 @@ import { UUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
+  imageRepository: any;
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -25,5 +26,9 @@ export class UsersService {
 
   update(userId: UUID, userInformation: Partial<User>): Promise<UpdateResult> {
     return this.usersRepository.update(userId, userInformation);
+  }
+
+  async getCertifiedImages(userId: number) {
+    return this.imageRepository.find({ where: { userId, isCertified: true } });
   }
 }
